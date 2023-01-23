@@ -25,5 +25,5 @@
 
 #define D_VM_CLOCK 1000
 #define D_ALLOCATED_RAM 2000
-#define D_NUM_REGS 2
-#define D_REGISTER_SIZE 8
+#define D_NUM_REGS 4
+#define D_REGISTER_SIZE 4

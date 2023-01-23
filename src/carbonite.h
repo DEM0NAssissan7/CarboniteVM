@@ -123,7 +123,7 @@ void run_cycle(VM *vm)
         case 0: //NUL
             break;
         case 1: //BRC
-            vm->pc = arg1 * 3;
+            vm->pc = arg1 * 9;
             branched = 1;
             break;
         case 2: //BRZ
