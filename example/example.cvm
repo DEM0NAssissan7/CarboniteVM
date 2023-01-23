@@ -1,0 +1,6 @@
+SET 0 16
+SET 1 1
+SUB 0 1
+BRZ 0 5
+BRC 3 0
+HLT 0 0
