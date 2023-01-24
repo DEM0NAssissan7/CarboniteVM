@@ -49,6 +49,28 @@
  * Byte 0: instruction
  * Byte 1-4: value 1
  * Byte 5-8: value 2
+ * 
+ * --- MEMORY STRUCTURE ---
+ * 
+ * 64KB are program code. Your programs cannot be larger than 
+ * The memory pointer for the devices is 0xFA00 -> 0xFFFF
+ * The beginning of working RAM is at 0x10000
+ * [64KB (Program Code)]
+ * [8KB (Device I/O)]
+ * [Rest (Working RAM)]
+ * 
+ * Your VM config MUST have at least 72 kilobytes of ram.
+ * 
+ * --- DEVICE MAPPING ---
+ * [2 bytes (identifier)]
+ * [4 bytes (device map size)]
+ * 
+ * (device map){
+ *  [2 bytes (data type)]
+ *  [4 bytes (data size)]
+ *  [x bytes (data)]
+ * }
+ * 
 */
 
 #ifndef CARBONITE
@@ -165,6 +187,7 @@ void run_cycle(VM *vm)
     {
         printf("Program counter has exceeded the boundaries of RAM. Terminating system.\nDumping VM:\n");
         dump_vm(vm);
+        printf("VM dumped. Exiting with error.\n");
         exit(1);
     }
 }

@@ -1,0 +1,20 @@
+SET 0 10 # For loop that constantly goes down by 10
+SET 1 1
+SUB 0 1
+BRZ 0 7
+BRC 2 0
+HLT 0 0 # This is for beans
+
+
+# For loop that goes up
+SET 0 0
+SET 1 1
+SET 2 10
+SET 3 0
+
+ADD 0 1
+ADD 3 1
+SUB 3 1
+
+BRZ 3 5
+BRC 10 0

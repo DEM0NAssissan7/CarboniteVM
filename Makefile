@@ -26,4 +26,4 @@ quick:
 
 test:
 	make
-	./cvm -c example/example.config example/example.cvm
+	./cvm example.cvm

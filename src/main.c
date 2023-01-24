@@ -27,7 +27,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "default.h"
+#include "config.h"
 #include "carbonite.h"
 #include "file.h"
 
@@ -36,11 +36,6 @@ typedef char *prg_object;
 FileDescriptor program;
 FileDescriptor config;
 int config_used = 0;
-
-int clock = D_VM_CLOCK;
-int memory = D_ALLOCATED_RAM;
-int num_regs = D_NUM_REGS;
-int reg_size = D_REGISTER_SIZE;
 
 VM vm;
 
@@ -80,7 +75,7 @@ int main(int argc, char *argv[])
 	}
 
 	// Create virtual machine
-	vm = create_vm(memory, num_regs, reg_size);
+	vm = create_vm(ALLOCATED_RAM, NUM_REGS, REGISTER_SIZE);
 	VM *vm_ptr = &vm;
 	
 	/* Compile program into dioxide machine code
@@ -95,22 +90,34 @@ int main(int argc, char *argv[])
 	int num_objects = 0;
 	int object_size = 0;
 	char buffer;
+	int skip_object = 0;
 	for(int i = 0; i <= program.length; i++)
 	{
 		buffer = program.string[i];
 
-		if(buffer == ' ' || buffer == '\n' || buffer == ';' || i == program.length)
+		if(skip_object == 0)
 		{
-			//Copy object into a buffer and then write a pointer to the buffer to the object list
-			prg_object object_buffer = malloc(object_size);
-			for(int j = 0; j < object_size; j++)
-				object_buffer[j] = program.string[(i - object_size) + j];
-			num_objects++;
-			program_objects = realloc(program_objects, sizeof(prg_object[num_objects]));
-			program_objects[num_objects - 1] = object_buffer;
-			object_size = 0;
-		} else
-			object_size++;
+			if(buffer == ' ' || buffer == '\n' || buffer == ';' || i == program.length || buffer == '#')
+			{
+				if(object_size > 0)
+				{
+					//Copy object into a buffer and then write a pointer to the buffer to the object list
+					prg_object object_buffer = malloc(object_size);
+					for(int j = 0; j < object_size; j++)
+						object_buffer[j] = program.string[(i - object_size) + j];
+					num_objects++;
+					program_objects = realloc(program_objects, sizeof(prg_object[num_objects]));
+					program_objects[num_objects - 1] = object_buffer;
+					object_size = 0;
+				}
+			} else
+				object_size++;
+		}
+
+		if(buffer == '#')
+			skip_object = 1;
+		if(buffer == '\n')
+			skip_object = 0;
 	}
 	//Close files
 	fclose(program.file);
@@ -178,7 +185,7 @@ int main(int argc, char *argv[])
 	{
 		run_cycle(vm_ptr);
 	}
-	dump_vm(vm_ptr);
+	// dump_vm(vm_ptr);
 
 
 	return EXIT_SUCCESS;

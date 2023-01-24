@@ -23,7 +23,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-#define D_VM_CLOCK 1000
-#define D_ALLOCATED_RAM 2000
-#define D_NUM_REGS 4
-#define D_REGISTER_SIZE 4
+#define VM_CLOCK 1000 // 1000Hz
+#define ALLOCATED_RAM 80000 // 80KB of RAM
+#define NUM_REGS 4
+#define REGISTER_SIZE 4 // 32 bit register
