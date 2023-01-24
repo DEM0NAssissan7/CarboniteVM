@@ -184,6 +184,7 @@ int main(int argc, char *argv[])
 	while(!vm.terminate)
 	{
 		run_cycle(vm_ptr);
+		usleep(1000000/VM_CLOCK); // Run virtual CPU at VM_CLOCK hertz
 	}
 	// dump_vm(vm_ptr);
 

@@ -5,9 +5,7 @@ BRZ 0 7
 BRC 2 0
 HLT 0 0 # This is for beans
 
-
-# For loop that goes up
-SET 0 0
+SET 0 0 # For loop that goes up
 SET 1 1
 SET 2 10
 SET 3 0
