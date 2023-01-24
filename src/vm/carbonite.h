@@ -23,56 +23,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-
-/* Carbonite Virtual Machine
- * This is a virtual machine library uses a special architecture called the Dioxide Architecture, built by me
- * It is a RISC instruction set centered around manipulating registers and memory
- * 
- * Each instruction should look something like this:
- * INST (ARG1 ARG2)
- * 
- * Here is the instruction set:
- * 00: NUL (NULL NULL) [do nothing]
- * 01: BRC (pc NULL) [pc = pc]
- * 02: BRZ (reg pc) [reg == 0? pc = pc]
- * 03: SET (reg val) [reg = val]
- * 04: LOD (addr reg) [reg = ram]
- * 05: STR (reg addr) [ram = reg]
- * 06: ADD (reg1 reg2) [reg1 = reg1 + reg2]
- * 07: SUB (reg1 reg2) [reg1 = reg1 - reg2]
- * 07: TWC (reg NULL) [two's compliment of register]
- * 08: RSH (reg NULL) [reg >>]
- * 09: LSH (reg NULL) [reg <<]
- * 10: HLT (NULL NULL) [stop CPU]
- * 
- * Each instruction will take 9 bytes of data:
- * Byte 0: instruction
- * Byte 1-4: value 1
- * Byte 5-8: value 2
- * 
- * --- MEMORY STRUCTURE ---
- * 
- * 64KB are program code. Your programs cannot be larger than 
- * The memory pointer for the devices is 0xFA00 -> 0xFFFF
- * The beginning of working RAM is at 0x10000
- * [64KB (Program Code)]
- * [8KB (Device I/O)]
- * [Rest (Working RAM)]
- * 
- * Your VM config MUST have at least 72 kilobytes of ram.
- * 
- * --- DEVICE MAPPING ---
- * [2 bytes (identifier)]
- * [4 bytes (device map size)]
- * 
- * (device map){
- *  [2 bytes (data type)]
- *  [4 bytes (data size)]
- *  [x bytes (data)]
- * }
- * 
-*/
-
 #ifndef CARBONITE
 #define CARBONITE
 
@@ -155,30 +105,58 @@ void run_cycle(VM *vm)
                 branched = 1;
             }
             break;
-        case 3: //SET
-            vm->registers[arg1] = arg2;
+        case 3: //HLT
+            vm->terminate = 1;
             break;
-        case 4: //LOD
-            vm->registers[arg2] = vm->memory[arg1];
+        case 4: //SET
+            vm->registers[arg1] += arg2;
             break;
-        case 5: //STR
-            vm->memory[arg2] = vm->registers[arg1];
-            break;
-        case 6: //ADD
+        case 5: //ADD
             vm->registers[arg1] += vm->registers[arg2];
             break;
-        case 7: //TWC TODO, for now it is SUB
+        case 6: //TWC TODO, for now it is SUB
             // vm->registers[arg1] = twos_compliment(vm->registers[arg1]);
             vm->registers[arg1] -= vm->registers[arg2];
             break;
-        case 8: //RSH
+        case 7: //RSH
             vm->registers[arg1] = vm->registers[arg1] >> 1;
             break;
-        case 9: //LSH
+        case 8: //LSH
             vm->registers[arg1] = vm->registers[arg1] << 1;
             break;
-        case 10: //HLT
-            vm->terminate = 1;
+        case 9: //LDCHAR
+            vm->registers[arg1] = vm->memory[arg2];
+            break;
+        case 10: //LDSHRT
+            for(int i = 0; i < 2; i++)
+            {
+                int shift_size = (1 - i) * 8;
+                vm->registers[arg1] += vm->memory[arg2 + i] << shift_size;
+            }
+            break;
+        case 11: //LODINT
+            for(int i = 0; i < 4; i++)
+            {
+                int shift_size = (3 - i) * 8;
+                vm->registers[arg1] += vm->memory[arg2 + i] << shift_size;
+            }
+            break;
+        case 12: //STCHAR
+            vm->memory[arg1] = vm->registers[arg2];
+            break;
+        case 13: //STSHRT
+            for(int i = 0; i < 2; i++)
+            {
+				int shift_size = (1 - i) * 8;
+				vm->memory[arg1 + i] = vm->registers[arg2] >> shift_size;
+            }
+            break;
+        case 14: //STRINT
+            for(int i = 0; i < 4; i++)
+            {
+				int shift_size = (3 - i) * 8;
+				vm->memory[arg1 + i] = vm->registers[arg2] >> shift_size;
+            }
             break;
     }
     if(!branched)

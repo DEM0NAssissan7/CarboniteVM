@@ -26,7 +26,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#include "carbonite.h"
+#include "vm/carbonite.h"
 
 typedef struct FileDescriptor
 {

@@ -27,8 +27,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "config.h"
-#include "carbonite.h"
+#include "vm/config.h"
+#include "vm/carbonite.h"
 #include "file.h"
 
 typedef char *prg_object;
@@ -138,16 +138,24 @@ int main(int argc, char *argv[])
 		if (string_is_equal(instruction, "NUL")) m_instruction = 0;
 		else if (string_is_equal(instruction, "BRC")) m_instruction = 1;
 		else if (string_is_equal(instruction, "BRZ")) m_instruction = 2;
-		else if (string_is_equal(instruction, "SET")) m_instruction = 3;
-		else if (string_is_equal(instruction, "LOD")) m_instruction = 4;
-		else if (string_is_equal(instruction, "STR")) m_instruction = 5;
-		else if (string_is_equal(instruction, "ADD")) m_instruction = 6;
-		else if (string_is_equal(instruction, "SUB")) m_instruction = 7;
-		else if (string_is_equal(instruction, "RSH")) m_instruction = 8;
-		else if (string_is_equal(instruction, "LSH")) m_instruction = 9;
-		else if (string_is_equal(instruction, "HLT")) m_instruction = 10;
+		else if (string_is_equal(instruction, "HLT")) m_instruction = 3;
+		else if (string_is_equal(instruction, "SET")) m_instruction = 4;
+		else if (string_is_equal(instruction, "ADD")) m_instruction = 5;
+		else if (string_is_equal(instruction, "SUB")) m_instruction = 6;
+		else if (string_is_equal(instruction, "RSH")) m_instruction = 7;
+		else if (string_is_equal(instruction, "LSH")) m_instruction = 8;
+		else if (string_is_equal(instruction, "LDCHAR")) m_instruction = 9;
+		else if (string_is_equal(instruction, "LDSHRT")) m_instruction = 10;
+		else if (string_is_equal(instruction, "LODINT")) m_instruction = 11;
+		else if (string_is_equal(instruction, "STCHAR")) m_instruction = 12;
+		else if (string_is_equal(instruction, "STSHRT")) m_instruction = 13;
+		else if (string_is_equal(instruction, "STDINT")) m_instruction = 14;
 		else
+		{
 			is_valid_instruction = 0;
+			printf("Object '%s' is not valid. (Object %d)\n", instruction, i);
+			exit(-1);
+		}
 
 		if(is_valid_instruction)
 		{
