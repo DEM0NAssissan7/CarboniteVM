@@ -30,7 +30,6 @@ Each instruction will take 9 bytes of data:
  * Byte 5-8: value 2
 
 # Memory Structure
-
  * 64KiB are program code. Your programs cannot be larger than 64KiB.
  * The program code spans from 0x0000 to 0xFFFF
  * The memory pointer for the devices is 0x10000 -> 0x1FFFF

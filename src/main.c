@@ -153,7 +153,7 @@ int main(int argc, char *argv[])
 		else
 		{
 			is_valid_instruction = 0;
-			printf("Object '%s' is not valid. (Object %d)\n", instruction, i);
+			printf("Unknown verb '%s' (Object %d, Line %d)\n", instruction, i, (i / 3) + 1);
 			exit(-1);
 		}
 
